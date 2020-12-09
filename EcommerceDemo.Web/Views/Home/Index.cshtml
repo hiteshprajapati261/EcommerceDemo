@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row" style="margin-top:15px;">
+    <div class="col-md-3">
+        <input type="text" name="txtSearchText" id="txtSearchText" placeholder="Search Text" class="form-control" />        
+    </div>
+    <div class="col-md-3">        
+        <button type="button" id="btnSearch" class="btn btn-primary">Search</button>
+        <button type="button" id="btnClear" class="btn btn-primary">Clear</button>
+    </div>
+    <div class="col-md-4">
+        
+    </div>
+    <div class="col-md-2" style="padding-left:70px;">
+        <p><a class="btn btn-default" href="@Url.Action("Add","Home")">Add Product</a></p>
+    </div>
+</div>
+
+<table id="gridProducts" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th id="tech-companies-1-col-0" class="no-sort">Category</th>
+            <th id="tech-companies-1-col-0" class="no-sort">Product Name</th>
+            <th id="tech-companies-1-col-0" class="no-sort">Product Descriptikon</th>
+            <th id="tech-companies-1-col-0" class="no-sort">Edit</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#btnSearch').click(function () {
+                $('#gridProducts').DataTable().ajax.reload();
+            });
+
+            $('#btnClear').click(function () {
+                $('#txtSearchText').val('');
+                $('#gridProducts').DataTable().ajax.reload();
+            });
+
+
+            $('#gridProducts').dataTable({
+                "columnDefs": [{
+                    "targets": 'no-sort',
+                    "orderable": false,
+                }],
+                "paging": true,
+                "processing": true, // for show progress bar
+                "serverSide": true, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "bLengthChange": false, // this is for disable filter (search box)
+                "bPaginate": true,
+                "bInfo": false,
+                "ordering": true,
+                "aaSorting": [],
+                "ajax": {
+                    "url": "@Url.Action("GetProductList", "Home")",
+                    "type": "POST",
+                    "data": function (d) {
+                        d.name = $('#txtSearchText').val();
+                    },
+                    "datatype": "json"
+                },
+                "columns": [
+                         { data: "CategoryName", name: "CategoryName", "serverSide": true, sClass: "text-left", width: "10%" },
+                         { data: "ProdName", name: "ProdName", "serverSide": true, sClass: "text-left", width: "17%" },
+                         { data: "ProdDescription", name: "ProdDescription", "serverSide": true, sClass: "text-left", width: "17%" },
+                         {
+                             data: 'ProductId',
+                             render: function (data) {
+                                 return "<a href='" + "@Url.Action("Add")/" + data + "'>Edit</a>";
+                             },
+                             "width": "4%",
+                             sClass: "text-center",
+                         },
+                ]
+            });
+        });
+    </script>
+}
+@section styles
+{
+
+}

@@ -1,0 +1,133 @@
+﻿@model  EcommerceDemo.Models.Model.ProductModel
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Add/Edit Product
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="@Url.Action("Index","Home")" class="btn bg-olive btn-sm"><i class="fa fa-dashboard"></i>Product List</a></li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- jquery validation -->
+                <div class="box box-primary">
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    @using (Html.BeginForm("Add", "Home", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "formAddEditProduct", enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(model => model.ProductId)
+                        <div class="alert-danger">
+                            @Html.ValidationSummary(true)
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- text input -->
+                                    <div class="form-group">
+                                        <label><span style="color:red;">*</span>Product Category</label>
+                                        @Html.DropDownListFor(model => model.ProdCatId, (List<SelectListItem>)ViewBag.CategoryList, new { @class = "form-control", onchange = "BindProductAttributes(this);" })
+                                        @Html.ValidationMessageFor(model => model.ProdCatId, "", new { @class = "control-error" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- text input -->
+                                    <div class="form-group">
+                                        <label><span style="color:red;">*</span>Product Name</label>
+                                        @Html.TextBoxFor(model => model.ProdName, new { @class = "form-control", placeholder = "Product Name", @maxlength = 250 })
+                                        @Html.ValidationMessageFor(model => model.ProdName, "", new { @class = "control-error" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- text input -->
+                                    <div class="form-group">
+                                        <label><span style="color:red;">*</span>Description</label>
+                                        @Html.TextAreaFor(model => model.ProdDescription, new { @class = "form-control", placeholder = "Product Description", @maxlength = 2000 })
+                                        @Html.ValidationMessageFor(model => model.ProdDescription, "", new { @class = "control-error" })
+                                    </div>
+                                </div>
+                            </div>
+                            <fieldset>
+                                <legend>
+                                    Attribues <button type="button" id="btnAddAttribute" class="btn btn-primary">
+                                        Add Attributes
+                                    </button>
+                                </legend>
+                                <div id="attributeList">
+                                    @foreach (var attribute in Model.ProductAttributes)
+                                    {
+                                        Html.RenderPartial("_Attribute", attribute);
+                                    }
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" name="btnSave" class="btn btn-primary">Submit</button>
+
+                            <button type="button" class="btn btn-primary" onclick="javascript: window.location.href = '@Url.Action("Index")';">Cancel</button>
+                        </div>
+                    }
+
+                    @if (Model.ProductId > 0)
+                    {
+                        using (Html.BeginForm("DeleteProduct", "Home", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "formDeleteProduct", enctype = "multipart/form-data" }))
+                        {
+                            @Html.HiddenFor(m => m.ProductId);
+                            <button type="submit" name="btnDelete" class="btn btn-primary" id="btnDelete">Delete</button>
+                        }
+                    }
+
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col (left) -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnAddAttribute').click(function () {
+                if ($('#ProdCatId').val() == '') {
+                    alert('Please select category first!');
+                    return;
+                }
+                $.ajax({
+                    url: '/Home/GetAttribute',
+                    data: { categoryId: $('#ProdCatId').val() },
+                    type: "POST",
+                    async: true,
+                    success: function (data) {
+                        $("#attributeList").append(data);
+                    },
+                    error: function (xhr) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+
+

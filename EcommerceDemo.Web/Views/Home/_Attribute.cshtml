@@ -1,0 +1,24 @@
+﻿@model  EcommerceDemo.Models.Model.ProductAttributeModel
+@using HtmlHelpers.BeginCollectionItem
+
+@using (Html.BeginCollectionItem("ProductAttributes"))
+{
+    <div class="row">
+        <div class="col-sm-3">
+            <!-- text input -->
+            <div class="form-group">
+                <label><span style="color:red;">*</span>Product Category</label>
+                @Html.DropDownListFor(model => model.AttributeId, (List<SelectListItem>)ViewBag.Attributes, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AttributeId, "", new { @class = "control-error" })
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <!-- text input -->
+            <div class="form-group">
+                <label><span style="color:red;">*</span>Attribute Value</label>
+                @Html.TextBoxFor(model => model.AttributeValue, new { @class = "form-control", placeholder = "Attribute Value", @maxlength = 250 })
+                @Html.ValidationMessageFor(model => model.AttributeValue, "", new { @class = "control-error" })
+            </div>
+        </div>
+    </div>
+}

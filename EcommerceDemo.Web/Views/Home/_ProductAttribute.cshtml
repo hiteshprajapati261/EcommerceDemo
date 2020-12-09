@@ -1,0 +1,13 @@
+﻿@model IEnumerable<EcommerceDemo.Models.Model.ProductAttributeLookupModel>
+
+<table cellpadding="1" cellspacing="1" border="1">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.AttributeId</td>
+            <td>@item.AttributeName</td>
+            <td>@Html.TextBoxFor(model => @item.AttributeValue, new { @class = "form-control", placeholder = "Attribute Name" })</td>
+        </tr>
+    }
+</table>
+
